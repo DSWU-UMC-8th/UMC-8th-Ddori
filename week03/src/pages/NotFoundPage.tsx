@@ -1,6 +1,6 @@
 const NotFoundPage = () => {
   return (
-    <div>NotFoundPage</div>
+    <div>NotFound - 페이지가 존재하지 않습니다</div>
   )
 }
 
