@@ -3,6 +3,7 @@ import { SubmitHandler, useForm } from "react-hook-form";
 import { z } from "zod";
 import { postSignup } from "../apis/auth";
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 const schema = z
   .object({
@@ -25,6 +26,7 @@ const schema = z
 type FormFields = z.infer<typeof schema>;
 
 const SignupPage = () => {
+  const navigate = useNavigate();
   const [step, setStep] = useState(1);
   const [showPassword, setShowPassword] = useState(false);
   const [showPasswordCheck, setShowPasswordCheck] = useState(false);
@@ -57,7 +59,16 @@ const SignupPage = () => {
   };
 
   return (
-    <div className="flex flex-col items-center justify-center h-screen">
+    <div className="bg-black text-white flex flex-col items-center justify-center h-screen">
+      <div className="flex items-center justify-center mb-2">
+            <button
+              onClick={() => navigate(-1)}
+              className="text-white text-xl hover:text-gray-400"
+            >
+              &lt;
+            </button>
+            <h2 className="ml-3 text-xl font-semibold">회원가입</h2>
+          </div>
       <form
         onSubmit={handleSubmit(onSubmit)}
         className="flex flex-col gap-4 w-[300px]"
@@ -65,6 +76,20 @@ const SignupPage = () => {
         {/* 이메일 */}
         {step === 1 && (
           <>
+            <button
+              type="button"
+              className="w-full border border-white py-2 rounded-md hover:bg-white hover:text-black transition-colors"
+            >
+              <div className="flex items-center justify-center gap-2">
+                <img className="w-[20px] h-[20px]" src={"images/google.png"} alt="Google Logo" />
+                <span>구글 로그인</span>
+              </div>
+            </button>
+            <div className="flex items-center gap-4 text-gray-400">
+            <div className="flex-1 h-px bg-gray-600"></div>
+            <span>OR</span>
+            <div className="flex-1 h-px bg-gray-600"></div>
+            </div>
             <input
               {...register("email")}
               placeholder="이메일"

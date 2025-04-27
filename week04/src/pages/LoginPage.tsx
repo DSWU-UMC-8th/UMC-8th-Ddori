@@ -48,7 +48,6 @@ const LoginPage = () => {
 
           <button
             type="button"
-            onClick={handleSubmit}
             className="w-full border border-white py-2 rounded-md hover:bg-white hover:text-black transition-colors"
           >
             <div className="flex items-center justify-center gap-2">
