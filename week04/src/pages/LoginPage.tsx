@@ -1,13 +1,19 @@
 import { useNavigate } from "react-router-dom";
 import useForm from "../hooks/useForm";
 import { UserSigninInformation, validateSignin } from "../utils/validate";
-import { postSignin } from "../apis/auth";
-import { useLocalStorage } from "../hooks/useLocalStorage";
-import { LOCAL_STORAGE_KEY } from "../constants.ts/key";
+import { useAuth } from "../context/AuthContext";
+import { useEffect } from "react";
 
 const LoginPage = () => {
+  const {login, accessToken} = useAuth();
   const navigate = useNavigate();
-  const {setItem} = useLocalStorage(LOCAL_STORAGE_KEY.accessToken);
+
+  useEffect(() => {
+    if (accessToken) {
+      navigate("/");
+    }
+  }, [navigate, accessToken]);
+  
   const { values, errors, touched, getInputProps } = useForm<UserSigninInformation>({
     initialValue: {
       email: "",
@@ -17,13 +23,7 @@ const LoginPage = () => {
   });
 
   const handleSubmit = async () => {
-    console.log(values);
-    try {
-      const response = await postSignin(values);
-      setItem(response.data.accessToken);
-    } catch (error) {
-      alert(error);
-    }
+      await login(values);
   };
 
   const isDisabled =

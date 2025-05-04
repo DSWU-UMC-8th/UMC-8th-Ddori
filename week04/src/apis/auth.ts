@@ -1,3 +1,5 @@
+import { LOCAL_STORAGE_KEY } from "../constants/key";
+import { useLocalStorage } from "../hooks/useLocalStorage";
 import { RequestSignupDto, ResponseSignupDto, RequestSigninDto, ResponseSigninDto, ResponseMyInfoDto } from "../types/auth";
 import { axiosInstance } from "./axios";
 
@@ -14,7 +16,19 @@ export const postSignin = async (body: RequestSigninDto): Promise<ResponseSignin
 };
 
 export const getMyInfo = async (): Promise<ResponseMyInfoDto> => {
-  const { data } = await axiosInstance.get("/v1/users/me");
+  const {getItem} = useLocalStorage(LOCAL_STORAGE_KEY.accessToken); // 무시 가능 경고
+    const token = getItem();
+    const {data} = await axiosInstance.get('/v1/users/me', {
+        headers: {
+            Authorization: `Bearer ${token}`
+        }
+    });
+
+    return data;
+};
+
+export const postLogout = async () => {
+  const {data} = await axiosInstance.post("/v1/auth/signout");
 
   return data;
 };
