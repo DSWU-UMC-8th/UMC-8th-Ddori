@@ -26,6 +26,10 @@ const LoginPage = () => {
       await login(values);
   };
 
+  const handleGoogleLogin = () => {
+    window.location.href = import.meta.env.VITE_SERVER_API_URL + "/v1/auth/google/login";
+  }
+
   const isDisabled =
     Object.values(errors || {}).some((error) => error.length > 0) ||
     Object.values(values).some((value) => value === "");
@@ -49,6 +53,7 @@ const LoginPage = () => {
           <button
             type="button"
             className="w-full border border-white py-2 rounded-md hover:bg-white hover:text-black transition-colors"
+            onClick={handleGoogleLogin}
           >
             <div className="flex items-center justify-center gap-2">
               <img className="w-[20px] h-[20px]" src={"images/google.png"} alt="Google Logo" />
