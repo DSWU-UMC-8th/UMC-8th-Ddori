@@ -1,13 +1,19 @@
 import { useNavigate } from "react-router-dom";
 import useForm from "../hooks/useForm";
 import { UserSigninInformation, validateSignin } from "../utils/validate";
-import { postSignin } from "../apis/auth";
-import { useLocalStorage } from "../hooks/useLocalStorage";
-import { LOCAL_STORAGE_KEY } from "../constants.ts/key";
+import { useAuth } from "../context/AuthContext";
+import { useEffect } from "react";
 
 const LoginPage = () => {
+  const {login, accessToken} = useAuth();
   const navigate = useNavigate();
-  const {setItem} = useLocalStorage(LOCAL_STORAGE_KEY.accessToken);
+
+  useEffect(() => {
+    if (accessToken) {
+      navigate("/");
+    }
+  }, [navigate, accessToken]);
+  
   const { values, errors, touched, getInputProps } = useForm<UserSigninInformation>({
     initialValue: {
       email: "",
@@ -17,14 +23,12 @@ const LoginPage = () => {
   });
 
   const handleSubmit = async () => {
-    console.log(values);
-    try {
-      const response = await postSignin(values);
-      setItem(response.data.accessToken);
-    } catch (error) {
-      alert(error);
-    }
+      await login(values);
   };
+
+  const handleGoogleLogin = () => {
+    window.location.href = import.meta.env.VITE_SERVER_API_URL + "/v1/auth/google/login";
+  }
 
   const isDisabled =
     Object.values(errors || {}).some((error) => error.length > 0) ||
@@ -49,6 +53,7 @@ const LoginPage = () => {
           <button
             type="button"
             className="w-full border border-white py-2 rounded-md hover:bg-white hover:text-black transition-colors"
+            onClick={handleGoogleLogin}
           >
             <div className="flex items-center justify-center gap-2">
               <img className="w-[20px] h-[20px]" src={"images/google.png"} alt="Google Logo" />
