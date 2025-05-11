@@ -1,7 +1,12 @@
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
+import { Lp } from "../types/lp";
 
-const LpCard = ({ lp }) => {
+interface LpCardProps {
+  lp:Lp;
+}
+
+const LpCard = ({ lp }:LpCardProps) => {
   const navigate = useNavigate();
   const { accessToken } = useAuth();
 
