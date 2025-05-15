@@ -1,18 +1,40 @@
 import { useParams } from "react-router-dom";
 import useGetLpDetail from "../hooks/queries/useGetLpDetail";
+import useGetInfiniteComments from "../hooks/queries/useGetInfiniteComments";
+import { PAGINATION_ORDER } from "../enums/common";
+import CommentSkeletonList from "../components/CommentSkeletonList";
+import { useInView } from "react-intersection-observer";
+import { useEffect } from "react";
 
 const LpDetailPage = () => {
   const { id } = useParams();
-    const { data, isPending, isError } = useGetLpDetail(Number(id));
+  const lpId = Number(id);
+
+  const { data, isPending, isError, isFetching } = useGetLpDetail(lpId);
+  const {
+    data: commentsData,
+    fetchNextPage,
+    hasNextPage,
+  } = useGetInfiniteComments(lpId, PAGINATION_ORDER.asc);
+
+      const { ref, inView } = useInView({
+        threshold: 0,
+    })
+
+    useEffect(() => {
+        if(inView) {
+            // eslint-disable-next-line @typescript-eslint/no-unused-expressions
+            !isFetching && hasNextPage && fetchNextPage();  
+        }
+    }, [inView, isFetching, hasNextPage, fetchNextPage]);
 
   if (isPending) {
     return <div className={"mt-20 p-10"}>Loading...</div>;
   }
 
   if (isError) {
-    <div className={"mt-20"}>Error</div>;
+    return <div className={"mt-20"}>Error</div>;
   }
-  
   return (
      <div>
       <div className="max-w-2xl mx-auto bg-zinc-900 text-white rounded-xl p-13 shadow-md space-y-4 mt-5">
@@ -65,6 +87,36 @@ const LpDetailPage = () => {
             </button>
             <span className="text-sm">{data?.data.likes}</span>
           </div>
+      </div>
+
+       {/* 댓글 섹션 */}
+      <div className="max-w-2xl mx-auto mt-10 p-6 bg-zinc-800 rounded-lg text-white">
+        <h2 className="text-xl font-semibold mb-4">댓글</h2>
+
+{commentsData?.pages?.map((page, pageIndex) => (
+  <div key={pageIndex}>
+    {page.data?.data.map((comment) => (
+      <div key={comment.id} className="border-b border-gray-700 py-3">
+        <div className="flex items-center gap-3 mb-1">
+          <img
+            src={comment.author.avatar}
+            alt="댓글 작성자 프로필"
+            className="w-6 h-6 rounded-full"
+          />
+          <span className="font-medium">{comment.author.name}</span>
+          <span className="text-xs text-gray-400 ml-auto">
+            {new Date(comment.createdAt).toLocaleString()}
+          </span>
+        </div>
+        <p className="text-sm">{comment.content}</p>
+      </div>
+    ))}
+  </div>
+))}
+
+        {isFetching && <CommentSkeletonList count={5} />}
+
+      <div ref={ref} className="h-2"></div>
       </div>
     </div>
   );
