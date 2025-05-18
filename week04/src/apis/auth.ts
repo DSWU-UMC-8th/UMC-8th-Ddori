@@ -32,3 +32,20 @@ export const postLogout = async () => {
 
   return data;
 };
+
+export const editMyInfo = async ({
+  name,
+  bio,
+  avatar,
+}: {
+  name: string;
+  bio?: string;
+  avatar?: string;
+}) => {
+  const { data } = await axiosInstance.patch("/v1/users", {
+    name,
+    bio,
+    avatar,
+  });
+  return data;
+};

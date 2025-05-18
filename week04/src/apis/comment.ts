@@ -10,3 +10,16 @@ export const getComments = async (
   });
   return data;
 };
+
+export const postComment = async ({
+  lpId,
+  content,
+}: {
+  lpId: number;
+  content: string;
+}) => {
+  const { data } = await axiosInstance.post(`/v1/lps/${lpId}/comments`, {
+    content,
+  });
+  return data;
+};

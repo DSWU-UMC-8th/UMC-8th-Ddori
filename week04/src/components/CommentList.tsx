@@ -1,63 +1,47 @@
-import { useEffect, useState } from "react";
-import Comment from "./Comment";
 import { useInView } from "react-intersection-observer";
+import { useEffect } from "react";
+import Comment from "./Comment";
 import useGetInfiniteComments from "../hooks/queries/useGetInfiniteComments";
 import { PAGINATION_ORDER } from "../enums/common";
+import CommentSkeletonList from "./CommentSkeletonList";
+import CommentInput from "./CommentInput";
 
-const CommentList = () => {
-  const [order, setOrder] = useState<PAGINATION_ORDER>(PAGINATION_ORDER.desc);
+interface CommentListProps {
+  lpId: number;
+}
 
+const CommentList = ({ lpId }: CommentListProps) => {
   const {
-    data: comments,
-    isPending,
-    isFetching,
-    hasNextPage,
+    data: commentsData,
     fetchNextPage,
-    isError,
-  } = useGetInfiniteComments(10, order);
+    hasNextPage,
+    isFetching,
+  } = useGetInfiniteComments(lpId, PAGINATION_ORDER.asc);
 
   const { ref, inView } = useInView({ threshold: 0 });
 
   useEffect(() => {
-    if (inView && !isFetching && hasNextPage) {
+    if (inView && hasNextPage && !isFetching) {
       fetchNextPage();
     }
-  }, [inView, isFetching, hasNextPage, fetchNextPage]);
-
-  if (isPending) return <div className="mt-10">로딩 중...</div>;
-  if (isError) return <div className="mt-10">오류가 발생했습니다.</div>;
+  }, [inView, hasNextPage, isFetching, fetchNextPage]);
 
   return (
-    <div className="mt-10 w-full max-w-2xl mx-auto px-4">
-      <div className="flex justify-end gap-2 mb-4">
-        <button
-          className={`px-3 py-1 rounded-md ${order === PAGINATION_ORDER.asc ? "bg-white text-black" : "bg-zinc-700 text-white"}`}
-          onClick={() => setOrder(PAGINATION_ORDER.asc)}
-        >
-          오래된순
-        </button>
-        <button
-          className={`px-3 py-1 rounded-md ${order === PAGINATION_ORDER.desc ? "bg-white text-black" : "bg-zinc-700 text-white"}`}
-          onClick={() => setOrder(PAGINATION_ORDER.desc)}
-        >
-          최신순
-        </button>
-      </div>
+    <div className="max-w-2xl mx-auto mt-10 p-6 bg-zinc-800 rounded-lg text-white">
+      <h2 className="text-xl font-semibold mb-4">댓글</h2>
 
-      <div className="space-y-3">
-        {comments?.pages
-          ?.map((page) => page.data.data)
-          .flat()
-          .map((comment) => (
+      <CommentInput lpId={lpId} />
+
+      {commentsData?.pages.map((page, pageIndex) => (
+        <div key={pageIndex}>
+          {page.data?.data.map((comment) => (
             <Comment key={comment.id} comment={comment} />
           ))}
-      </div>
+        </div>
+      ))}
 
-      {/* 스켈레톤 or 로딩 */}
-      {isFetching && (
-        <div className="text-center text-sm text-gray-400 mt-4">댓글 불러오는 중...</div>
-      )}
-      <div ref={ref} className="h-4" />
+      {isFetching && <CommentSkeletonList count={5} />}
+      <div ref={ref} className="h-2"></div>
     </div>
   );
 };
