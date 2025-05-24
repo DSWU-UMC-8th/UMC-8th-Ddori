@@ -12,6 +12,7 @@ import { AuthProvider } from "./context/AuthContext";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import LpDetailPage from "./pages/LpDetailPage";
+import ThrottlePage from "./pages/ThrottlePage";
 
 //publicRoutes: 인증 없이 접근 가능한 라우트
 const publicRoutes = [
@@ -24,6 +25,7 @@ const publicRoutes = [
       { path: "login", element: <LoginPage /> },
       { path: "signup", element: <SignupPage /> },
       { path: "v1/auth/google/callback", element: <GoogleLoginRedirectPage /> },
+      { path: "/throttle", element: <ThrottlePage /> },
     ],
   },
 ];

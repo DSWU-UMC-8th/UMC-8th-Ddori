@@ -1,20 +1,22 @@
 import { useEffect, useState } from "react";
-import useGetLpList from "../hooks/queries/useGetLpList";
 import LpCard from "../components/LpCard";
 import useGetInfiniteLpList from "../hooks/queries/useGetInfiniteLpList";
 import { PAGINATION_ORDER } from "../enums/common";
 import { useInView } from "react-intersection-observer";
 import LpCardSkeletonList from "../components/LpCardSkeletonList";
 import LpModal from "../components/LpModal";
+import useDebounce from "../hooks/useDebounce";
+import { SEARCH_DEBOUNCE_DELAY } from "../constants/delay";
 
 const HomePage = () => {
   const [search, setSearch] = useState("");
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const debouncedValue = useDebounce(search, SEARCH_DEBOUNCE_DELAY);
   // const { data, isPending, isError } = useGetLpList({
   //   search,
   // });
 
-  const { data:lps, isFetching, hasNextPage, isPending, fetchNextPage, isError} = useGetInfiniteLpList(50, search, PAGINATION_ORDER.desc);
+  const { data:lps, isFetching, hasNextPage, isPending, fetchNextPage, isError} = useGetInfiniteLpList(50, debouncedValue, PAGINATION_ORDER.desc);
 
   // ref -> 특정한 HTML 요소를 감시
   // inView -> 그 요소가 화면에 보이면 true
