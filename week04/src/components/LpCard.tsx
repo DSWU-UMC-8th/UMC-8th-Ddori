@@ -33,7 +33,7 @@ const LpCard = ({ lp }: LpCardProps) => {
       <div className="absolute inset-0 bg-black bg-opacity-50 opacity-0 hover:opacity-100 transition-opacity duration-300 flex flex-col justify-end p-4 text-white">
         <h2 className="text-lg font-semibold">{lp.title}</h2>
         <p className="text-sm">{lp.createdAt}</p>
-        <p className="text-sm">❤️ {lp.likes}</p>
+        <p className="text-sm">❤️ {lp.likes.length}</p>
       </div>
     </div>
   );

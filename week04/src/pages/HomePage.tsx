@@ -5,9 +5,11 @@ import useGetInfiniteLpList from "../hooks/queries/useGetInfiniteLpList";
 import { PAGINATION_ORDER } from "../enums/common";
 import { useInView } from "react-intersection-observer";
 import LpCardSkeletonList from "../components/LpCardSkeletonList";
+import LpModal from "../components/LpModal";
 
 const HomePage = () => {
   const [search, setSearch] = useState("");
+  const [isModalOpen, setIsModalOpen] = useState(false);
   // const { data, isPending, isError } = useGetLpList({
   //   search,
   // });
@@ -54,6 +56,13 @@ const HomePage = () => {
   {isFetching && <LpCardSkeletonList count={20} />}
       </div>
       <div ref={ref} className="h-2"></div>
+      <button
+        onClick={() => setIsModalOpen(true)}
+        className="cursor-pointer fixed bottom-8 right-8 bg-pink-500 text-white p-4 rounded-full shadow-lg text-2xl"
+      >
+        +
+      </button>
+      {isModalOpen && <LpModal onClose={() => setIsModalOpen(false)} />}
     </div>
   );
 };
