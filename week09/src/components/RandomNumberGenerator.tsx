@@ -1,4 +1,4 @@
-import { useCounterStore } from "../stores/counterStore"
+import { useCounterStore } from "../store/counterStore"
 
 export default function RandomNumberGenerator() {
   const randomNumber = useCounterStore((state) => state.randomNumber);

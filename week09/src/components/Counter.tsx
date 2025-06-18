@@ -1,5 +1,5 @@
 import { useShallow } from "zustand/shallow";
-import { useCounterStore } from "../stores/counterStore";
+import { useCounterStore } from "../store/counterStore";
 import CounterButton from "./CounterButton";
 
 export default function Counter() {

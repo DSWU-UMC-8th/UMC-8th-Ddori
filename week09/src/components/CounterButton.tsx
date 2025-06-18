@@ -1,4 +1,4 @@
-import { useCounterActions } from "../stores/counterStore"
+import { useCounterActions } from "../store/counterStore"
 
 export default function CounterButton() {
   // 가독성 Good
